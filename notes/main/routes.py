@@ -7,3 +7,8 @@ from notes.main import bp
 def index():
     return(render_template("index.html"))
 
+
+@bp.route('/postgresql')
+def postgresql():
+    return(render_template("postgresql/psql.html"))
+

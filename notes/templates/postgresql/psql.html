@@ -1,0 +1,771 @@
+{% extends 'markdown_template.html' %}{% block markdown_content %}
+<h1 id="intro">Intro</h1>
+<p>This is a series of notes from FreeCodeCamp’s PostgreSQL tutoral. The youtube video can be found <a href="https://www.youtube.com/watch?v=qw--VYLpxG4">here</a>.</p>
+<h1 id="install">Install</h1>
+<p>On Arch Linux install with pacman or yay.</p>
+<pre class="shell"><code>pacman -Ss postgresql</code></pre>
+<p>Then start with <code>systemctl</code></p>
+<pre><code>systemctl start postgresql</code></pre>
+<h2 id="login-to-cli">Login to CLI</h2>
+<p>Access the PostgreSQL CLI via:</p>
+<p><code>sudo -u postgres psql</code></p>
+<h1 id="creating-databases">Creating databases</h1>
+<p>Within the psql CLI you can run</p>
+<p><code>CREATE DATABASE $db_name;</code></p>
+<p>to create a new database.</p>
+<blockquote>
+<p>All commands must end with a <code>;</code>!!</p>
+</blockquote>
+<pre><code>postgres=# CREATE DATABASE test;
+CREATE DATABASE
+postgres=#</code></pre>
+<h2 id="connect-to-the-db">Connect to the DB</h2>
+<p><code>psql -U $username $db_name</code></p>
+<p>Or, from within the psql cli</p>
+<p><code>\c $db_name</code></p>
+<h2 id="dropping-databases">Dropping Databases</h2>
+<p>Within the psql cli: <code>DROP DATABASE $db_name</code></p>
+<h2 id="creating-tables">Creating Tables</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> table_name (</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a>    column_name data_type <span class="kw">constraints</span>[optional]</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>)</span></code></pre></div>
+<p>Person Example:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> person (</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a>    <span class="kw">id</span> <span class="dt">INT</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a>    first_name <span class="dt">VARCHAR</span>(<span class="dv">50</span>),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a>    last_name <span class="dt">VARCHAR</span>(<span class="dv">50</span>),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true"></a>    gender <span class="dt">VARCHAR</span>(<span class="dv">6</span>),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true"></a>    date_of_birth <span class="dt">DATE</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true"></a>);</span></code></pre></div>
+<p><a href="https://www.postgresql.org/docs/12/datatype.html">Data Types Docs</a></p>
+<h1 id="list-tables-in-db">List Tables in DB</h1>
+<pre><code>postTesting=# \d
+
+
+        List of relations
+ Schema |  Name  | Type  | Owner
+--------+--------+-------+-------
+ public | person | table | kgb33
+(1 row)</code></pre>
+<h1 id="list-colums-in-table">List Colums in Table</h1>
+<pre><code>postTesting=# \d person
+
+
+                         Table &quot;public.person&quot;
+    Column     |         Type          | Collation | Nullable | Default
+---------------+-----------------------+-----------+----------+---------
+ id            | integer               |           |          |
+ first_name    | character varying(50) |           |          |
+ last_name     | character varying(50) |           |          |
+ gender        | character varying(6)  |           |          |
+ date_of_birth | date                  |           |          |</code></pre>
+<h1 id="creating-tables-part-2-with-contstraints">Creating Tables Part 2 – With Contstraints</h1>
+<div class="sourceCode" id="cb8"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> person (</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a>    <span class="kw">id</span> BIGSERIAL <span class="kw">NOT</span> <span class="kw">NULL</span> <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a>    first_name <span class="dt">VARCHAR</span>(<span class="dv">50</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true"></a>    last_name <span class="dt">VARCHAR</span>(<span class="dv">50</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true"></a>    gender <span class="dt">VARCHAR</span>(<span class="dv">6</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true"></a>    date_of_birth <span class="dt">DATE</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true"></a>);</span></code></pre></div>
+<ul>
+<li><code>NOT NULL</code> - Value cannot be NULL</li>
+<li><code>PRIMARY KEY</code> -</li>
+<li><code>BIGSERIAL</code> - Signed Int, Auto incriments</li>
+</ul>
+<pre><code>postTesting=# \d
+             List of relations
+ Schema |     Name      |   Type   | Owner
+--------+---------------+----------+-------
+ public | person        | table    | kgb33
+ public | person_id_seq | sequence | kgb33
+(2 rows)</code></pre>
+<pre><code>postTesting=# \d person
+                                       Table &quot;public.person&quot;
+    Column     |         Type          | Collation | Nullable |              Default
+---------------+-----------------------+-----------+----------+------------------------------------
+ id            | bigint                |           | not null | nextval(&#39;person_id_seq&#39;::regclass)
+ first_name    | character varying(50) |           | not null |
+ last_name     | character varying(50) |           | not null |
+ gender        | character varying(6)  |           | not null |
+ date_of_birth | date                  |           | not null |
+Indexes:
+    &quot;person_pkey&quot; PRIMARY KEY, btree (id)
+</code></pre>
+<h1 id="dropping-tables">Dropping tables</h1>
+<p><code>DROP TABLE $table_name;</code></p>
+<h1 id="insert">Insert</h1>
+<div class="sourceCode" id="cb11"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> $table_name (</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a>    $columns</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a>    <span class="op">..</span>.</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true"></a>    <span class="op">..</span>.)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true"></a><span class="kw">VALUES</span> ($var, <span class="op">..</span>., <span class="op">..</span>.);</span></code></pre></div>
+<p>Example:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> person (</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a>    first_name,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a>    last_name,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true"></a>    gender,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true"></a>    date_of_birth)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true"></a>    <span class="kw">VALUES</span> (<span class="st">&#39;Anne&#39;</span>, <span class="st">&#39;Smith&#39;</span>, <span class="st">&#39;FEMALE&#39;</span>, <span class="dt">DATE</span> <span class="st">&#39;1988-01-09&#39;</span>);</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true"></a><span class="kw">INSERT</span> <span class="dv">0</span> <span class="dv">1</span></span></code></pre></div>
+<ul>
+<li>DATE format is YEAR-MONTH-DAY</li>
+<li>id is not specified because PostgreSQL auto increments it for us</li>
+</ul>
+<h1 id="view-table-contents">View Table Contents</h1>
+<p>Use SQL <code>SELECT * FROM $table_name</code> to view all entries.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> person;</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true"></a> <span class="kw">id</span> | first_name | last_name | gender | date_of_birth</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true"></a><span class="co">----+------------+-----------+--------+---------------</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true"></a>  <span class="dv">1</span> | jake       | jones     | MALE   | <span class="dv">1990</span><span class="op">-</span><span class="dv">01</span><span class="op">-</span><span class="dv">10</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true"></a>  <span class="dv">2</span> | Anne       | Smith     | FEMALE | <span class="dv">1988</span><span class="op">-</span><span class="dv">01</span><span class="op">-</span><span class="dv">09</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true"></a>(<span class="dv">2</span> <span class="kw">rows</span>)</span></code></pre></div>
+<h1 id="mockaroo">Mockaroo</h1>
+<p>Generating 1,000 rows of data using <a href="https://www.mockaroo.com/">Mockaroo</a></p>
+<p>After downloading changed the following in the CREATE TABLE command</p>
+<ul>
+<li>Added NOT NULL constrains</li>
+<li>Added id and corrisponding info</li>
+</ul>
+<p>Generated data is in person.sql</p>
+<p>Within psql run <code>\i ./persons.sql</code> to run all the SQL code within the file</p>
+<h1 id="select">Select</h1>
+<p><code>SELECT $column_name FROM $table_name;</code></p>
+<p><code>*</code> is the wildcard operator, i.e.</p>
+<p><code>SELECT * FROM $table_name;</code> will select all columns.</p>
+<p><code>LIMIT $int</code> will limit the returned rows to the specified integer</p>
+<p>To select multiple columns seperate the column names with commas.</p>
+<p><code>SELECT $column_1, $column_2, ..., $column_n FROM $table_name</code></p>
+<h1 id="limit">Limit</h1>
+<p><code>LIMIT $int</code> will limit the returned rows to the specified integer</p>
+<p><code>SELECT * FROM $table_name LIMIT 10</code></p>
+<p>Will return the first 10 rows</p>
+<h2 id="selecting-one-column">Selecting one column:</h2>
+<div class="sourceCode" id="cb14"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a><span class="kw">SELECT</span> first_name <span class="kw">FROM</span> person <span class="kw">LIMIT</span> <span class="dv">5</span>;</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true"></a> first_name</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true"></a><span class="co">------------</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true"></a> Sargent</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true"></a> Tobias</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true"></a> Wait</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true"></a> Lulita</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true"></a> Tobye</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true"></a>(<span class="dv">5</span> <span class="kw">rows</span>)</span></code></pre></div>
+<h2 id="selecting-multiple-columns">Selecting multiple Columns:</h2>
+<div class="sourceCode" id="cb15"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a> <span class="kw">SELECT</span> first_name, last_name <span class="kw">FROM</span> person <span class="kw">LIMIT</span> <span class="dv">5</span>;</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true"></a> first_name | last_name</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true"></a><span class="co">------------+-----------</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true"></a> Sargent    | Matusiak</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true"></a> Tobias     | Bulled</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true"></a> Wait       | Deeves</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true"></a> Lulita     | Olivo</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true"></a> Tobye      | Blaisdell</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true"></a>(<span class="dv">5</span> <span class="kw">rows</span>)</span></code></pre></div>
+<h1 id="order-by">Order By</h1>
+<p>Order by has two modes, ASC and DESC. Ascending is default</p>
+<p><code>SELECT $column_A FROM $table_name ORDER BY $column_B</code></p>
+<h2 id="default-asc-mode">Default ASC mode</h2>
+<div class="sourceCode" id="cb16"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> person <span class="kw">ORDER</span> <span class="kw">BY</span> contry_of_birth <span class="kw">LIMIT</span> <span class="dv">10</span>;</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true"></a> <span class="kw">id</span>  | first_name  | last_name | gender |         email          | date_of_birth | contry_of_birth</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true"></a><span class="co">-----+-------------+-----------+--------+------------------------+---------------+-----------------</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true"></a> <span class="dv">450</span> | Brinna      | Barabisch | Female | bbarabischch@apple.com | <span class="dv">1989</span><span class="op">-</span><span class="dv">10</span><span class="op">-</span><span class="dv">05</span>    | Afghanistan</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true"></a> <span class="dv">656</span> | Christy     | Tew       | Female | ctewi7@i2i.jp          | <span class="dv">2007</span><span class="op">-</span><span class="dv">07</span><span class="op">-</span><span class="dv">18</span>    | Afghanistan</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true"></a> <span class="dv">283</span> | Anallese    | Wooles    | Female | awooles7u@ebay.co.uk   | <span class="dv">2014</span><span class="op">-</span><span class="dv">02</span><span class="op">-</span><span class="dv">15</span>    | Afghanistan</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true"></a> <span class="dv">709</span> | Wake        | Machans   | Male   | wmachansjo@nih.gov     | <span class="dv">1999</span><span class="op">-</span><span class="dv">10</span><span class="op">-</span><span class="dv">04</span>    | Afghanistan</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true"></a> <span class="dv">147</span> | Hercules    | Anstie    | Male   | hanstie42@cdc.gov      | <span class="dv">1987</span><span class="op">-</span><span class="dv">04</span><span class="op">-</span><span class="dv">18</span>    | Afghanistan</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true"></a> <span class="dv">660</span> | Kissie      | Emett     | Female | kemettib@trellian.com  | <span class="dv">1991</span><span class="op">-</span><span class="dv">05</span><span class="op">-</span><span class="dv">23</span>    | Albania</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true"></a> <span class="dv">490</span> | Kaile       | Neillans  | Female | kneillansdl@t.co       | <span class="dv">2002</span><span class="op">-</span><span class="dv">09</span><span class="op">-</span><span class="dv">04</span>    | Albania</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true"></a> <span class="dv">245</span> | Lee         | Kitter    | Female | lkitter6s@youku.com    | <span class="dv">1953</span><span class="op">-</span><span class="dv">12</span><span class="op">-</span><span class="dv">04</span>    | Albania</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true"></a> <span class="dv">361</span> | Rolf        | Capnor    | Male   |                        | <span class="dv">1997</span><span class="op">-</span><span class="dv">01</span><span class="op">-</span><span class="dv">01</span>    | Albania</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true"></a> <span class="dv">590</span> | Barbaraanne | Easey     | Female | beaseygd@sina.com.cn   | <span class="dv">2017</span><span class="op">-</span><span class="dv">02</span><span class="op">-</span><span class="dv">09</span>    | Albania</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true"></a>(<span class="dv">10</span> <span class="kw">rows</span>)</span></code></pre></div>
+<h2 id="desc-mode">DESC mode</h2>
+<div class="sourceCode" id="cb17"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> person <span class="kw">ORDER</span> <span class="kw">BY</span> contry_of_birth <span class="kw">DESC</span> <span class="kw">LIMIT</span> <span class="dv">10</span>;</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true"></a> <span class="kw">id</span>  | first_name | last_name | gender |          email          | date_of_birth | contry_of_birth</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true"></a><span class="co">-----+------------+-----------+--------+-------------------------+---------------+-----------------</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true"></a> <span class="dv">757</span> | Ansell     | Teaz      | Male   | ateazl0@dmoz.org        | <span class="dv">1971</span><span class="op">-</span><span class="dv">05</span><span class="op">-</span><span class="dv">02</span>    | Zimbabwe</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true"></a> <span class="dv">559</span> | Bourke     | Zamora    | Male   | bzamorafi@php.net       | <span class="dv">1983</span><span class="op">-</span><span class="dv">07</span><span class="op">-</span><span class="dv">16</span>    | Zimbabwe</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true"></a> <span class="dv">146</span> | Sharla     | Green     | Female | sgreen41@live.com       | <span class="dv">2020</span><span class="op">-</span><span class="dv">03</span><span class="op">-</span><span class="dv">07</span>    | Zambia</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true"></a> <span class="dv">860</span> | Raul       | Yeliashev | Male   | ryeliashevnv@wiley.com  | <span class="dv">2014</span><span class="op">-</span><span class="dv">02</span><span class="op">-</span><span class="dv">16</span>    | Zambia</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true"></a> <span class="dv">332</span> | Mack       | O<span class="st">&#39;Lagen   | Male   |                         | 1973-04-03    | Yemen</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true"></a><span class="st"> 314 | Odessa     | Pinnigar  | Female | opinnigar8p@4shared.com | 1986-09-05    | Yemen</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true"></a><span class="st"> 567 | Avery      | Snap      | Male   | asnapfq@gravatar.com    | 1977-02-10    | Yemen</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true"></a><span class="st"> 535 | Ruprecht   | Lippett   | Male   | rlippetteu@amazon.co.uk | 1984-03-09    | Yemen</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true"></a><span class="st"> 955 | Terrance   | Fevier    | Male   | tfevierqi@myspace.com   | 1974-07-11    | Yemen</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true"></a><span class="st">  19 | Emanuel    | Bembrigg  | Male   |                         | 2016-11-20    | Western Sahara</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true"></a><span class="st">(10 rows)</span></span></code></pre></div>
+<h1 id="distinct">Distinct</h1>
+<p><code>DISTINCT</code> removes duplicates from a Query</p>
+<p><code>SELECT DISTINCT $column_name FROM $table_name</code></p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a> <span class="kw">SELECT</span> <span class="kw">DISTINCT</span> contry_of_birth <span class="kw">FROM</span> person <span class="kw">ORDER</span> <span class="kw">BY</span> contry_of_birth <span class="kw">LIMIT</span> <span class="dv">5</span>;</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true"></a>   contry_of_birth</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true"></a><span class="co">---------------------</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true"></a> Afghanistan</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true"></a> Albania</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true"></a> Antigua <span class="kw">and</span> Barbuda</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true"></a> Argentina</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true"></a> Armenia</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true"></a>(<span class="dv">5</span> <span class="kw">rows</span>)</span></code></pre></div>
+<h1 id="where">Where</h1>
+<p><code>SELECT $column_A FROM $table WHERE $condtion</code></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> person <span class="kw">WHERE</span> gender <span class="op">=</span> <span class="st">&#39;Male&#39;</span> <span class="kw">LIMIT</span> <span class="dv">5</span>;</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true"></a> <span class="kw">id</span> | first_name | last_name | gender |          email          | date_of_birth | contry_of_birth</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true"></a><span class="co">----+------------+-----------+--------+-------------------------+---------------+-----------------</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true"></a>  <span class="dv">1</span> | Sargent    | Matusiak  | Male   | smatusiak0@irs.gov      | <span class="dv">1968</span><span class="op">-</span><span class="dv">09</span><span class="op">-</span><span class="dv">08</span>    | China</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true"></a>  <span class="dv">2</span> | Tobias     | Bulled    | Male   |                         | <span class="dv">1961</span><span class="op">-</span><span class="dv">07</span><span class="op">-</span><span class="dv">01</span>    | Poland</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true"></a>  <span class="dv">3</span> | Wait       | Deeves    | Male   | wdeeves2@lulu.com       | <span class="dv">1972</span><span class="op">-</span><span class="dv">09</span><span class="op">-</span><span class="dv">24</span>    | Russia</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true"></a>  <span class="dv">6</span> | Antonino   | Pineaux   | Male   |                         | <span class="dv">1971</span><span class="op">-</span><span class="dv">05</span><span class="op">-</span><span class="dv">28</span>    | Russia</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true"></a>  <span class="dv">7</span> | Quintin    | Cromb     | Male   | qcromb6@theguardian.com | <span class="dv">1979</span><span class="op">-</span><span class="dv">11</span><span class="op">-</span><span class="dv">25</span>    | China</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true"></a>(<span class="dv">5</span> <span class="kw">rows</span>)</span></code></pre></div>
+<p>You can also use other compairson operators</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> person <span class="kw">WHERE</span> date_of_birth <span class="op">&gt;</span> <span class="dt">DATE</span> <span class="st">&#39;1999-03-03&#39;</span> <span class="kw">LIMIT</span> <span class="dv">5</span>;</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true"></a> <span class="kw">id</span> | first_name |  last_name  | gender |             email             | date_of_birth |    contry_of_birth</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true"></a><span class="co">----+------------+-------------+--------+-------------------------------+---------------+-----------------------</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true"></a>  <span class="dv">5</span> | Tobye      | Blaisdell   | Female | tblaisdell4@sciencedirect.com | <span class="dv">2015</span><span class="op">-</span><span class="dv">10</span><span class="op">-</span><span class="dv">14</span>    | Netherlands</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true"></a>  <span class="dv">9</span> | Barthel    | Roughey     | Male   | broughey8@opensource.org      | <span class="dv">2002</span><span class="op">-</span><span class="dv">04</span><span class="op">-</span><span class="dv">23</span>    | Philippines</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true"></a> <span class="dv">11</span> | Geralda    | Ludgate     | Female |                               | <span class="dv">2005</span><span class="op">-</span><span class="dv">02</span><span class="op">-</span><span class="dv">12</span>    | France</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true"></a> <span class="dv">12</span> | Tracey     | Connaughton | Female | tconnaughtonb@pcworld.com     | <span class="dv">2008</span><span class="op">-</span><span class="dv">03</span><span class="op">-</span><span class="dv">05</span>    | Saint Kitts <span class="kw">and</span> Nevis</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true"></a> <span class="dv">13</span> | Alica      | O<span class="st">&#39; Mahony   | Female |                               | 2004-02-22    | France</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true"></a><span class="st">(5 rows)</span></span></code></pre></div>
+<h1 id="and---or">AND - OR</h1>
+<p>Contionals can also be combined using AND &amp; OR.</p>
+<p><code>SELECT ... FROM ... WHERE $condtion_A AND $condtion_B</code></p>
+<h2 id="chained-contionals">Chained Contionals</h2>
+<div class="sourceCode" id="cb21"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> person <span class="kw">WHERE</span> date_of_birth <span class="op">&gt;</span> <span class="dt">DATE</span> <span class="st">&#39;1999-03-03&#39;</span> <span class="kw">AND</span> contry_of_birth <span class="op">=</span> <span class="st">&#39;Brazil&#39;</span>  <span class="kw">LIMIT</span> <span class="dv">5</span>;</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true"></a> <span class="kw">id</span>  | first_name | last_name | gender |          email           | date_of_birth | contry_of_birth</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true"></a><span class="co">-----+------------+-----------+--------+--------------------------+---------------+-----------------</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true"></a>  <span class="dv">30</span> | Katee      | Coopman   | Female | kcoopmant@columbia.edu   | <span class="dv">2006</span><span class="op">-</span><span class="dv">10</span><span class="op">-</span><span class="dv">17</span>    | Brazil</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true"></a>  <span class="dv">40</span> | Sula       | Hourihane | Female | shourihane13@mozilla.org | <span class="dv">2016</span><span class="op">-</span><span class="dv">12</span><span class="op">-</span><span class="dv">06</span>    | Brazil</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true"></a>  <span class="dv">53</span> | Camellia   | Minico    | Female |                          | <span class="dv">2008</span><span class="op">-</span><span class="dv">03</span><span class="op">-</span><span class="dv">26</span>    | Brazil</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true"></a>  <span class="dv">62</span> | Leona      | Leborgne  | Female | lleborgne1p@squidoo.com  | <span class="dv">2000</span><span class="op">-</span><span class="dv">02</span><span class="op">-</span><span class="dv">29</span>    | Brazil</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true"></a> <span class="dv">398</span> | Davidson   | Kynson    | Male   | dkynsonb1@e<span class="op">-</span>recht24.de   | <span class="dv">2002</span><span class="op">-</span><span class="dv">01</span><span class="op">-</span><span class="dv">31</span>    | Brazil</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true"></a>(<span class="dv">5</span> <span class="kw">rows</span>)</span></code></pre></div>
+<h2 id="nested-condtionals">Nested Condtionals</h2>
+<div class="sourceCode" id="cb22"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> person <span class="kw">WHERE</span> gender <span class="op">=</span> <span class="st">&#39;Male&#39;</span> <span class="kw">AND</span> (contry_of_birth <span class="op">=</span> <span class="st">&#39;Brazil&#39;</span> <span class="kw">OR</span> contry_of_birth <span class="op">=</span> <span class="st">&#39;Russia&#39;</span>)  <span class="kw">LIMIT</span> <span class="dv">5</span>;</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true"></a> <span class="kw">id</span> | first_name | last_name | gender |         email         | date_of_birth | contry_of_birth</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true"></a><span class="co">----+------------+-----------+--------+-----------------------+---------------+-----------------</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true"></a>  <span class="dv">3</span> | Wait       | Deeves    | Male   | wdeeves2@lulu.com     | <span class="dv">1972</span><span class="op">-</span><span class="dv">09</span><span class="op">-</span><span class="dv">24</span>    | Russia</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true"></a>  <span class="dv">6</span> | Antonino   | Pineaux   | Male   |                       | <span class="dv">1971</span><span class="op">-</span><span class="dv">05</span><span class="op">-</span><span class="dv">28</span>    | Russia</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true"></a> <span class="dv">22</span> | Berny      | Tremayle  | Male   |                       | <span class="dv">1989</span><span class="op">-</span><span class="dv">08</span><span class="op">-</span><span class="dv">21</span>    | Brazil</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true"></a> <span class="dv">37</span> | Morly      | Emanueli  | Male   |                       | <span class="dv">1991</span><span class="op">-</span><span class="dv">06</span><span class="op">-</span><span class="dv">01</span>    | Russia</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true"></a> <span class="dv">51</span> | Holden     | Olliff    | Male   | holliff1e@cbsnews.com | <span class="dv">1992</span><span class="op">-</span><span class="dv">12</span><span class="op">-</span><span class="dv">25</span>    | Russia</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true"></a>(<span class="dv">5</span> <span class="kw">rows</span>)</span></code></pre></div>
+<h1 id="comparison-operators">Comparison Operators</h1>
+<table>
+<colgroup>
+<col style="width: 6%" />
+<col style="width: 15%" />
+<col style="width: 11%" />
+<col style="width: 30%" />
+<col style="width: 26%" />
+<col style="width: 11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Equal</th>
+<th style="text-align: center;">Greater Than</th>
+<th style="text-align: center;">Less Than</th>
+<th style="text-align: center;">Greater Than or Equal To</th>
+<th style="text-align: center;">Less Than or Equal To</th>
+<th style="text-align: center;">Not Equal</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">=</td>
+<td style="text-align: center;">&gt;</td>
+<td style="text-align: center;">&lt;</td>
+<td style="text-align: center;">&gt;=</td>
+<td style="text-align: center;">&lt;=</td>
+<td style="text-align: center;">&lt;&gt;</td>
+</tr>
+</tbody>
+</table>
+<h1 id="offset">Offset</h1>
+<p><code>SELECT ... FROM ... OFFSET $n</code> returns all columns after the first <code>n</code> columns.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> person OFFSET <span class="dv">5</span> <span class="kw">LIMIT</span> <span class="dv">5</span>;</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true"></a> <span class="kw">id</span> | first_name | last_name | gender |          email           | date_of_birth | contry_of_birth</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true"></a><span class="co">----+------------+-----------+--------+--------------------------+---------------+-----------------</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true"></a>  <span class="dv">6</span> | Antonino   | Pineaux   | Male   |                          | <span class="dv">1971</span><span class="op">-</span><span class="dv">05</span><span class="op">-</span><span class="dv">28</span>    | Russia</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true"></a>  <span class="dv">7</span> | Quintin    | Cromb     | Male   | qcromb6@theguardian.com  | <span class="dv">1979</span><span class="op">-</span><span class="dv">11</span><span class="op">-</span><span class="dv">25</span>    | China</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true"></a>  <span class="dv">8</span> | Rivy       | Di Biagio | Female | rdibiagio7@nymag.com     | <span class="dv">1987</span><span class="op">-</span><span class="dv">07</span><span class="op">-</span><span class="dv">18</span>    | Uruguay</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true"></a>  <span class="dv">9</span> | Barthel    | Roughey   | Male   | broughey8@opensource.org | <span class="dv">2002</span><span class="op">-</span><span class="dv">04</span><span class="op">-</span><span class="dv">23</span>    | Philippines</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true"></a> <span class="dv">10</span> | Tanhya     | Dymock    | Female | tdymock9@unesco.org      | <span class="dv">1974</span><span class="op">-</span><span class="dv">04</span><span class="op">-</span><span class="dv">08</span>    | Ukraine</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true"></a>(<span class="dv">5</span> <span class="kw">rows</span>)</span></code></pre></div>
+<h1 id="fetch">Fetch</h1>
+<p>SQL standard for LIMIT.</p>
+<p><code>LIMIT $n</code> is equivalent to <code>FETCH FIRST $n ROW ONLY</code></p>
+<h1 id="in">IN</h1>
+<p>A shorter way to write OR’d equal to statements.</p>
+<p><code>... WHERE $column_X = $value_1 OR ... OR $column_X = $value_N</code></p>
+<p>is equivalant to</p>
+<p><code>... WHERE $column_X IN ($value_1, ..., $value_N)</code></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> person <span class="kw">WHERE</span> contry_of_birth <span class="kw">IN</span> (<span class="st">&#39;Russia&#39;</span>, <span class="st">&#39;Germany&#39;</span>, <span class="st">&#39;Japan&#39;</span>) OFFSET <span class="dv">5</span> <span class="kw">LIMIT</span> <span class="dv">5</span>;</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true"></a> <span class="kw">id</span>  | first_name |  last_name   | gender |            email             | date_of_birth | contry_of_birth</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true"></a><span class="co">-----+------------+--------------+--------+------------------------------+---------------+-----------------</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true"></a>  <span class="dv">61</span> | Aimee      | Romei        | Female | aromei1o@yahoo.com           | <span class="dv">2019</span><span class="op">-</span><span class="dv">02</span><span class="op">-</span><span class="dv">17</span>    | Russia</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true"></a>  <span class="dv">63</span> | Sybille    | Disbrey      | Female | sdisbrey1q@addtoany.com      | <span class="dv">2004</span><span class="op">-</span><span class="dv">11</span><span class="op">-</span><span class="dv">26</span>    | Germany</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true"></a>  <span class="dv">72</span> | Jamima     | Hardison     | Female | jhardison1z@china.com.cn     | <span class="dv">1959</span><span class="op">-</span><span class="dv">04</span><span class="op">-</span><span class="dv">25</span>    | Russia</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true"></a>  <span class="dv">90</span> | Quintin    | Raubenheimer | Male   | qraubenheimer2h@yolasite.com | <span class="dv">2015</span><span class="op">-</span><span class="dv">04</span><span class="op">-</span><span class="dv">22</span>    | Japan</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true"></a> <span class="dv">102</span> | Rand       | Oxenden      | Male   | roxenden2t@<span class="dv">123</span><span class="op">-</span>reg.co.uk     | <span class="dv">2003</span><span class="op">-</span><span class="dv">08</span><span class="op">-</span><span class="dv">31</span>    | Russia</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true"></a>(<span class="dv">5</span> <span class="kw">rows</span>)</span></code></pre></div>
+<h1 id="between">Between</h1>
+<p>Select all rows where the given column is between two values</p>
+<p><code>... WHERE $column BETWEEN $value_1 AND $value_2</code></p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> person <span class="kw">WHERE</span> date_of_birth <span class="kw">BETWEEN</span> <span class="dt">DATE</span> <span class="st">&#39;2000-01-01&#39;</span> <span class="kw">AND</span> <span class="st">&#39;2009-12-31&#39;</span> <span class="kw">ORDER</span> <span class="kw">BY</span> date_of_birth <span class="kw">LIMIT</span> <span class="dv">5</span>;</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true"></a> <span class="kw">id</span>  | first_name |  last_name  | gender |            email             | date_of_birth | contry_of_birth</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true"></a><span class="co">-----+------------+-------------+--------+------------------------------+---------------+-----------------</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true"></a> <span class="dv">907</span> | Marjie     | Wrightham   | Female |                              | <span class="dv">2000</span><span class="op">-</span><span class="dv">02</span><span class="op">-</span><span class="dv">20</span>    | Portugal</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true"></a>  <span class="dv">62</span> | Leona      | Leborgne    | Female | lleborgne1p@squidoo.com      | <span class="dv">2000</span><span class="op">-</span><span class="dv">02</span><span class="op">-</span><span class="dv">29</span>    | Brazil</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true"></a> <span class="dv">624</span> | Gennie     | De Michetti | Female | gdemichettihb@imdb.com       | <span class="dv">2000</span><span class="op">-</span><span class="dv">03</span><span class="op">-</span><span class="dv">18</span>    | Sweden</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true"></a> <span class="dv">362</span> | Jedediah   | Hincham     | Male   | jhinchama1@ezinearticles.com | <span class="dv">2000</span><span class="op">-</span><span class="dv">03</span><span class="op">-</span><span class="dv">27</span>    | Russia</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true"></a> <span class="dv">994</span> | Gertruda   | Tapp        | Female | gtapprl@amazon.de            | <span class="dv">2000</span><span class="op">-</span><span class="dv">06</span><span class="op">-</span><span class="dv">16</span>    | Netherlands</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true"></a>(<span class="dv">5</span> <span class="kw">rows</span>)</span></code></pre></div>
+<h1 id="like">Like</h1>
+<p><code>LIKE</code> is used for pattern matching strings</p>
+<p><code>... WHERE $column LIKE $pattern</code></p>
+<h3 id="symbols">Symbols</h3>
+<ul>
+<li><code>%</code> is the wildcard</li>
+<li><code>_</code> Matches a single char</li>
+</ul>
+<div class="sourceCode" id="cb26"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> person <span class="kw">WHERE</span> email <span class="kw">LIKE</span> <span class="st">&#39;%@google%&#39;</span> <span class="kw">LIMIT</span> <span class="dv">5</span>;</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true"></a> <span class="kw">id</span>  | first_name | last_name | gender |         email         | date_of_birth | contry_of_birth</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true"></a><span class="co">-----+------------+-----------+--------+-----------------------+---------------+-----------------</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true"></a>  <span class="dv">31</span> | Cherin     | Trevett   | Female | ctrevettu@google.cn   | <span class="dv">2013</span><span class="op">-</span><span class="dv">03</span><span class="op">-</span><span class="dv">02</span>    | China</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true"></a> <span class="dv">121</span> | Maggee     | Greenley  | Female | mgreenley3c@google.pl | <span class="dv">1970</span><span class="op">-</span><span class="dv">01</span><span class="op">-</span><span class="dv">23</span>    | China</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true"></a> <span class="dv">212</span> | Jeramie    | Margeram  | Male   | jmargeram5v@google.fr | <span class="dv">1973</span><span class="op">-</span><span class="dv">03</span><span class="op">-</span><span class="dv">10</span>    | Indonesia</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true"></a> <span class="dv">301</span> | Alisa      | Twells    | Female | atwells8c@google.cn   | <span class="dv">1987</span><span class="op">-</span><span class="dv">02</span><span class="op">-</span><span class="dv">28</span>    | China</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true"></a> <span class="dv">305</span> | Frannie    | Marriage  | Male   | fmarriage8g@google.fr | <span class="dv">2015</span><span class="op">-</span><span class="dv">10</span><span class="op">-</span><span class="dv">04</span>    | Russia</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true"></a>(<span class="dv">5</span> <span class="kw">rows</span>)</span></code></pre></div>
+<h1 id="ilike">iLike</h1>
+<p><code>ILIKE</code> is a case <strong>insensitive</strong> version of <code>LIKE</code></p>
+<h1 id="group-by">Group By</h1>
+<p>Groups data by a column</p>
+<p><code>SELECT $column, COUNT(*) FROM $table GROUP BY $column</code></p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true"></a><span class="kw">SELECT</span> contry_of_birth, <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">from</span> person <span class="kw">GROUP</span> <span class="kw">BY</span> contry_of_birth <span class="kw">ORDER</span> <span class="kw">BY</span> <span class="fu">COUNT</span> <span class="kw">DESC</span> <span class="kw">LIMIT</span> <span class="dv">10</span>;</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true"></a> contry_of_birth | <span class="fu">count</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true"></a><span class="co">-----------------+-------</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true"></a> China           |   <span class="dv">188</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true"></a> Indonesia       |   <span class="dv">104</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true"></a> Russia          |    <span class="dv">61</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true"></a> Philippines     |    <span class="dv">52</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true"></a> Brazil          |    <span class="dv">46</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true"></a> United States   |    <span class="dv">37</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true"></a> Portugal        |    <span class="dv">37</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true"></a> France          |    <span class="dv">30</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true"></a> Poland          |    <span class="dv">28</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true"></a> Sweden          |    <span class="dv">24</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true"></a>(<span class="dv">10</span> <span class="kw">rows</span>)</span></code></pre></div>
+<h1 id="having">Having</h1>
+<p>A way to filter <code>GROUP BY</code> results</p>
+<p><code>... GROUP BY ... HAVING $condtional</code></p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true"></a><span class="kw">SELECT</span> contry_of_birth, <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">from</span> person <span class="kw">GROUP</span> <span class="kw">BY</span> contry_of_birth <span class="kw">HAVING</span> <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="op">&gt;</span> <span class="dv">10</span> <span class="kw">ORDER</span> <span class="kw">BY</span> contry_of_birth <span class="kw">LIMIT</span> <span class="dv">10</span>;</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true"></a> contry_of_birth | <span class="fu">count</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true"></a><span class="co">-----------------+-------</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true"></a> Argentina       |    <span class="dv">11</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true"></a> Brazil          |    <span class="dv">46</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true"></a> China           |   <span class="dv">188</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true"></a> Colombia        |    <span class="dv">16</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true"></a> Czech Republic  |    <span class="dv">11</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true"></a> France          |    <span class="dv">30</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true"></a> Greece          |    <span class="dv">14</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true"></a> Indonesia       |   <span class="dv">104</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true"></a> Japan           |    <span class="dv">14</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true"></a> Mexico          |    <span class="dv">13</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true"></a>(<span class="dv">10</span> <span class="kw">rows</span>)</span></code></pre></div>
+<blockquote>
+<p>Other Aggregate Functions like <code>COUNT()</code> can be found <a href="https://www.postgresql.org/docs/12/functions-aggregate.html">here</a> and are discussed in more detail in the next section.</p>
+</blockquote>
+<h1 id="exporting-query-results">Exporting Query Results</h1>
+<div class="sourceCode" id="cb29"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true"></a>\<span class="kw">copy</span> ($query) <span class="kw">TO</span> <span class="st">&#39;$location/file_name&#39;</span> DELIMITER <span class="st">&#39;$delimiter&#39;</span> $FILE_TYPE <span class="kw">HEADER</span>;</span></code></pre></div>
+<p>Example (using the car_person.sql file):</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true"></a></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true"></a></span></code></pre></div>
+<h1 id="max-min-avg">Max, Min, Avg</h1>
+<div class="sourceCode" id="cb31"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true"></a><span class="kw">SELECT</span> <span class="fu">MAX</span>(price), <span class="fu">MIN</span>(price), <span class="fu">AVG</span>(price:<span class="ch">:numeric</span>):<span class="ch">:money</span> <span class="kw">FROM</span> car;</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true"></a>    <span class="fu">max</span>     |   <span class="fu">min</span>   |    <span class="fu">avg</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true"></a><span class="co">------------+---------+------------</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true"></a> $<span class="dv">19</span>,<span class="fl">987.90</span> | $<span class="fl">260.86</span> | $<span class="dv">10</span>,<span class="fl">039.70</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true"></a>(<span class="dv">1</span> <span class="kw">row</span>)</span></code></pre></div>
+<blockquote>
+<p>For Avg, the price is cast to a numeric type then back to money because <code>AVG</code> does not accept the type money.</p>
+</blockquote>
+<h2 id="getting-the-min-max-and-avg-for-each-make-model">Getting the Min, Max and, Avg for each Make &amp; Model</h2>
+<div class="sourceCode" id="cb32"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true"></a><span class="kw">SELECT</span> make, model, <span class="fu">MIN</span>(price), <span class="fu">MAX</span>(price), <span class="fu">AVG</span>(price:<span class="ch">:numeric</span>):<span class="ch">:money</span> <span class="kw">FROM</span> car <span class="kw">GROUP</span> <span class="kw">BY</span> make, model <span class="kw">ORDER</span> <span class="kw">BY</span> <span class="fu">AVG</span>(price:<span class="ch">:numeric</span>) <span class="kw">LIMIT</span> <span class="dv">10</span>;</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true"></a>    make    |     model      |   <span class="fu">min</span>   |   <span class="fu">max</span>   |   <span class="fu">avg</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true"></a><span class="co">------------+----------------+---------+---------+---------</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true"></a> Volkswagen | GTI            | $<span class="fl">260.86</span> | $<span class="fl">260.86</span> | $<span class="fl">260.86</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true"></a> Bentley    | Continental GT | $<span class="fl">277.09</span> | $<span class="fl">277.09</span> | $<span class="fl">277.09</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true"></a> Mitsubishi | Expo           | $<span class="fl">288.28</span> | $<span class="fl">288.28</span> | $<span class="fl">288.28</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true"></a> Chevrolet  | Blazer         | $<span class="fl">340.02</span> | $<span class="fl">340.02</span> | $<span class="fl">340.02</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true"></a> Mazda      | Protege        | $<span class="fl">387.81</span> | $<span class="fl">387.81</span> | $<span class="fl">387.81</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true"></a> Lincoln    | Navigator      | $<span class="fl">561.70</span> | $<span class="fl">561.70</span> | $<span class="fl">561.70</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true"></a> Mazda      | B2600          | $<span class="fl">577.52</span> | $<span class="fl">577.52</span> | $<span class="fl">577.52</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true"></a> Dodge      | Ram Wagon B150 | $<span class="fl">599.64</span> | $<span class="fl">599.64</span> | $<span class="fl">599.64</span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true"></a> Porsche    | <span class="dv">911</span>            | $<span class="fl">660.27</span> | $<span class="fl">660.27</span> | $<span class="fl">660.27</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true"></a> Isuzu      | Rodeo          | $<span class="fl">709.94</span> | $<span class="fl">709.94</span> | $<span class="fl">709.94</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true"></a>(<span class="dv">10</span> <span class="kw">rows</span>)</span></code></pre></div>
+<h2 id="sum">Sum</h2>
+<div class="sourceCode" id="cb33"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true"></a><span class="kw">SELECT</span> make, <span class="fu">SUM</span>(price) <span class="kw">FROM</span> car <span class="kw">GROUP</span> <span class="kw">BY</span> make <span class="kw">LIMIT</span> <span class="dv">5</span>;</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true"></a>   make   |     <span class="fu">sum</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true"></a><span class="co">----------+-------------</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true"></a> McLaren  |   $<span class="dv">4</span>,<span class="fl">512.17</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true"></a> Ford     | $<span class="dv">799</span>,<span class="fl">628.88</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true"></a> Maserati |  $<span class="dv">67</span>,<span class="fl">333.64</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true"></a> Dodge    | $<span class="dv">582</span>,<span class="fl">804.56</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true"></a> Infiniti | $<span class="dv">125</span>,<span class="fl">195.89</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true"></a>(<span class="dv">5</span> <span class="kw">rows</span>)</span></code></pre></div>
+<h1 id="operatiors">Operatiors</h1>
+<div class="sourceCode" id="cb34"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true"></a><span class="kw">SELECT</span> <span class="dv">2</span><span class="op">+</span><span class="dv">2</span> <span class="kw">AS</span> <span class="kw">add</span>,</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true"></a>       <span class="dv">2</span><span class="op">-</span><span class="dv">2</span> <span class="kw">AS</span> sub,</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true"></a>       <span class="dv">2</span><span class="op">*</span><span class="dv">3</span> <span class="kw">AS</span> mul,</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true"></a>       <span class="dv">16</span><span class="op">/</span><span class="dv">2</span> <span class="kw">AS</span> div,</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true"></a>       <span class="dv">3</span>^<span class="dv">3</span> <span class="kw">AS</span> pow,</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true"></a>       <span class="dv">5</span>! <span class="kw">AS</span> fac,</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true"></a>       <span class="dv">9</span>%<span class="dv">3</span> <span class="kw">AS</span> <span class="fu">mod</span>;</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true"></a></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true"></a> <span class="kw">add</span> | sub | mul | div | pow | fac | <span class="fu">mod</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true"></a><span class="co">-----+-----+-----+-----+-----+-----+-----</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true"></a>   <span class="dv">4</span> |   <span class="dv">0</span> |   <span class="dv">6</span> |   <span class="dv">8</span> |  <span class="dv">27</span> | <span class="dv">120</span> |   <span class="dv">0</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true"></a>(<span class="dv">1</span> <span class="kw">row</span>)</span></code></pre></div>
+<h1 id="operations-on-data">Operations on Data</h1>
+<p>Here we are displaying the new price and loss revianew a 10% sale plus a $200 coupon would cost a car dealership.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true"></a></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true"></a><span class="kw">SELECT</span> make, model, <span class="dt">year</span>, (price:<span class="ch">:numeric</span> <span class="op">*</span> <span class="fl">.9</span> <span class="op">-</span> <span class="dv">200</span>):<span class="ch">:money</span> <span class="kw">AS</span> <span class="ot">&quot;New Price&quot;</span>, (price:<span class="ch">:numeric</span> <span class="op">*</span> <span class="fl">.1</span> <span class="op">+</span> <span class="dv">200</span>):<span class="ch">:money</span> <span class="kw">AS</span> <span class="ot">&quot;Lost Profit&quot;</span> <span class="kw">FROM</span> car <span class="kw">ORDER</span> <span class="kw">BY</span> <span class="ot">&quot;Lost Profit&quot;</span> <span class="kw">LIMIT</span> <span class="dv">10</span>;</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true"></a>    make    |     model      | <span class="dt">year</span> | <span class="kw">New</span> Price | Lost Profit</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true"></a><span class="co">------------+----------------+------+-----------+-------------</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true"></a> Volkswagen | GTI            | <span class="dv">2000</span> |    $<span class="fl">34.77</span> |     $<span class="fl">226.09</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true"></a> Bentley    | Continental GT | <span class="dv">2012</span> |    $<span class="fl">49.38</span> |     $<span class="fl">227.71</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true"></a> Mitsubishi | Expo           | <span class="dv">1992</span> |    $<span class="fl">59.45</span> |     $<span class="fl">228.83</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true"></a> Ford       | Explorer       | <span class="dv">2009</span> |    $<span class="fl">60.29</span> |     $<span class="fl">228.92</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true"></a> Lexus      | ES             | <span class="dv">2007</span> |    $<span class="fl">68.84</span> |     $<span class="fl">229.87</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true"></a> Chevrolet  | Blazer         | <span class="dv">1992</span> |   $<span class="fl">106.02</span> |     $<span class="fl">234.00</span></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true"></a> Acura      | RSX            | <span class="dv">2003</span> |   $<span class="fl">123.57</span> |     $<span class="fl">235.95</span></span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true"></a> Hyundai    | Accent         | <span class="dv">1999</span> |   $<span class="fl">141.35</span> |     $<span class="fl">237.93</span></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true"></a> McLaren    | MP4<span class="op">-</span>12C        | <span class="dv">2012</span> |   $<span class="fl">148.40</span> |     $<span class="fl">238.71</span></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true"></a> Mazda      | Protege        | <span class="dv">2001</span> |   $<span class="fl">149.03</span> |     $<span class="fl">238.78</span></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true"></a>(<span class="dv">10</span> <span class="kw">rows</span>)</span></code></pre></div>
+<h1 id="alias">Alias</h1>
+<p>You might have noticed the <code>AS</code> keyword in the above SQL, its just a way to rename columns in the output.</p>
+<p><code>SELECT $column_name AS $new_column_name FROM ...</code> # Coalesce</p>
+<p><code>COALESCE($val_1, $val_2, ..., $val_n)</code> will output the first value that is not <code>null</code></p>
+<h2 id="useage">Useage</h2>
+<p><code>SELECT COALESCE(null, null, 2)</code></p>
+<p>Can be used to provide a default value.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true"></a><span class="kw">SELECT</span> email, <span class="fu">COALESCE</span>(email, <span class="st">&#39;Email not Provided&#39;</span>) <span class="kw">FROM</span> person <span class="kw">LIMIT</span> <span class="dv">5</span>;</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true"></a>             email             |           <span class="fu">coalesce</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true"></a><span class="co">-------------------------------+-------------------------------</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true"></a> smatusiak0@irs.gov            | smatusiak0@irs.gov</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true"></a>                               | Email <span class="kw">not</span> Provided</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true"></a> wdeeves2@lulu.com             | wdeeves2@lulu.com</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true"></a>                               | Email <span class="kw">not</span> Provided</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true"></a> tblaisdell4@sciencedirect.com | tblaisdell4@sciencedirect.com</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true"></a>(<span class="dv">5</span> <span class="kw">rows</span>)</span></code></pre></div>
+<h1 id="nullif">NullIf</h1>
+<p><code>NULLIF($val_1, $val_2)</code></p>
+<p>If <code>val_1</code> == <code>val_2</code> returns Null, otherwise returns <code>val_1</code></p>
+<h2 id="handling-division-by-zero">Handling Division by Zero</h2>
+<p><code>SELECT COALESCE($val_A / NULLIF(%val_B, 0), -1)</code></p>
+<p>Val_A = 33, Val_B = 11</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true"></a></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true"></a><span class="kw">SELECT</span> <span class="fu">COALESCE</span>(<span class="dv">33</span> <span class="op">/</span> <span class="fu">NULLIF</span>(<span class="dv">11</span>, <span class="dv">0</span>), <span class="op">-</span><span class="dv">1</span>);</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true"></a></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true"></a> <span class="fu">coalesce</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true"></a><span class="co">----------</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true"></a>        <span class="dv">3</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true"></a>(<span class="dv">1</span> <span class="kw">row</span>)</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true"></a></span></code></pre></div>
+<p>Val_A = 33, Val_B = 0</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true"></a><span class="kw">SELECT</span> <span class="fu">COALESCE</span>(<span class="dv">33</span> <span class="op">/</span> <span class="fu">NULLIF</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="op">-</span><span class="dv">1</span>);</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true"></a> <span class="fu">coalesce</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true"></a><span class="co">----------</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true"></a>       <span class="op">-</span><span class="dv">1</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true"></a>(<span class="dv">1</span> <span class="kw">row</span>)</span></code></pre></div>
+<h1 id="now">Now</h1>
+<p><code>NOW()</code> Returns the current Date and Time</p>
+<p>Format: yyyy-mm-dd hh:mm:ss.uuuuuu+Shift_From_UTC</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true"></a><span class="kw">SELECT</span> NOW();</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true"></a>              now</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true"></a><span class="co">-------------------------------</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true"></a> <span class="dv">2020</span><span class="op">-</span><span class="dv">04</span><span class="op">-</span><span class="dv">11</span> <span class="dv">15</span><span class="ch">:58:19</span><span class="fl">.979002</span><span class="op">-</span><span class="dv">05</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true"></a>(<span class="dv">1</span> <span class="kw">row</span>)</span></code></pre></div>
+<h2 id="using-now-to-get-the-date-and-time">Using NOW() to get the date and time</h2>
+<p>Cast NOW() into DATE and TIME.</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true"></a><span class="kw">SELECT</span> NOW():<span class="ch">:DATE</span> <span class="kw">AS</span> <span class="dt">date</span>, NOW():<span class="ch">:TIME</span> <span class="kw">AS</span> <span class="dt">time</span>;</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true"></a>    <span class="dt">date</span>    |      <span class="dt">time</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true"></a><span class="co">------------+-----------------</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true"></a> <span class="dv">2020</span><span class="op">-</span><span class="dv">04</span><span class="op">-</span><span class="dv">11</span> | <span class="dv">16</span><span class="ch">:57:12</span><span class="fl">.945428</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true"></a>(<span class="dv">1</span> <span class="kw">row</span>)</span></code></pre></div>
+<p>More Date/Time Info can be found <a href="https://www.postgresql.org/docs/12/datatype-datetime.html">here</a></p>
+<h1 id="interval">Interval</h1>
+<p>Used to calculate differances between Date/Time objects</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true"></a><span class="kw">SELECT</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true"></a>    NOW():<span class="ch">:DATE</span> <span class="kw">AS</span> now,</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true"></a>    (NOW() <span class="op">-</span>  <span class="dt">INTERVAL</span> <span class="st">&#39;1 YEAR&#39;</span>):<span class="ch">:DATE</span> <span class="kw">AS</span> <span class="ot">&quot;1 Year Ago&quot;</span>,</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true"></a>    (NOW() <span class="op">+</span> <span class="dt">INTERVAL</span> <span class="st">&#39;100 DAYS&#39;</span>):<span class="ch">:DATE</span> <span class="kw">as</span> <span class="ot">&quot;100 Days From Now&quot;</span>;</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true"></a></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true"></a>    now     | <span class="dv">1</span> <span class="dt">Year</span> Ago | <span class="dv">100</span> Days <span class="kw">From</span> Now</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true"></a><span class="co">------------+------------+-------------------</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true"></a> <span class="dv">2020</span><span class="op">-</span><span class="dv">04</span><span class="op">-</span><span class="dv">11</span> | <span class="dv">2019</span><span class="op">-</span><span class="dv">04</span><span class="op">-</span><span class="dv">11</span> | <span class="dv">2020</span><span class="op">-</span><span class="dv">07</span><span class="op">-</span><span class="dv">20</span></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true"></a>(<span class="dv">1</span> <span class="kw">row</span>)</span></code></pre></div>
+<h1 id="extract">Extract</h1>
+<p>Used to extract part of a datetime object</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true"></a><span class="kw">SELECT</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true"></a>    <span class="fu">EXTRACT</span>(CENTURY <span class="kw">FROM</span> NOW()) <span class="kw">AS</span> Century,</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true"></a>    <span class="fu">EXTRACT</span>(<span class="dt">YEAR</span> <span class="kw">FROM</span> NOW()) <span class="kw">as</span> <span class="dt">Year</span>,</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true"></a>    <span class="fu">EXTRACT</span>(<span class="dt">MONTH</span> <span class="kw">FROM</span> NOW()) <span class="kw">AS</span> <span class="dt">Month</span>,</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true"></a>    <span class="fu">EXTRACT</span>(<span class="dt">DAY</span> <span class="kw">FROM</span> NOW()) <span class="kw">AS</span> <span class="dt">Day</span>,</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true"></a>    <span class="fu">EXTRACT</span>(DOW <span class="kw">FROM</span> NOW()) <span class="kw">AS</span> <span class="ot">&quot;Day Of The Week&quot;</span>;</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true"></a></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true"></a> century | <span class="dt">year</span> | <span class="dt">month</span> | <span class="dt">day</span> | <span class="dt">Day</span> <span class="kw">Of</span> <span class="kw">The</span> Week</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true"></a><span class="co">---------+------+-------+-----+-----------------</span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true"></a>      <span class="dv">21</span> | <span class="dv">2020</span> |     <span class="dv">4</span> |  <span class="dv">11</span> |               <span class="dv">6</span></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true"></a>(<span class="dv">1</span> <span class="kw">row</span>)</span></code></pre></div>
+<p>Where the Day of the Week uses the following table:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Sunday</th>
+<th>Monday</th>
+<th>...</th>
+<th>Friday</th>
+<th>Saturday</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>1</td>
+<td>...</td>
+<td>5</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+<h1 id="age">Age</h1>
+<p><code>AGE</code> Calculates the differance between two timestamps</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true"></a><span class="kw">SELECT</span> first_name, last_name, AGE(NOW(), date_of_birth) <span class="kw">AS</span> Age <span class="kw">FROM</span> person <span class="kw">ORDER</span> <span class="kw">BY</span> date_of_birth <span class="kw">LIMIT</span> <span class="dv">5</span>;</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true"></a> first_name | last_name |                   age</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true"></a><span class="co">------------+-----------+-----------------------------------------</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true"></a> Isabelle   | Etheredge | <span class="dv">70</span> years <span class="dv">2</span> mons <span class="dv">25</span> days <span class="dv">17</span><span class="ch">:24:41</span><span class="fl">.850913</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true"></a> Holly<span class="op">-</span>anne | Folker    | <span class="dv">70</span> years <span class="dv">2</span> mons <span class="dv">22</span> days <span class="dv">17</span><span class="ch">:24:41</span><span class="fl">.850913</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true"></a> Edeline    | Pietz     | <span class="dv">70</span> years <span class="dv">1</span> mon <span class="dv">7</span> days <span class="dv">17</span><span class="ch">:24:41</span><span class="fl">.850913</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true"></a> Neall      | Danbrook  | <span class="dv">70</span> years <span class="dv">21</span> days <span class="dv">17</span><span class="ch">:24:41</span><span class="fl">.850913</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true"></a> Leesa      | Gerault   | <span class="dv">69</span> years <span class="dv">9</span> mons <span class="dv">25</span> days <span class="dv">17</span><span class="ch">:24:41</span><span class="fl">.850913</span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true"></a>(<span class="dv">5</span> <span class="kw">rows</span>)</span></code></pre></div>
+<h1 id="prefix">Prefix</h1>
+<ul>
+<li><code>\d $table</code> will show the columns and indexes for a table. Use this to see the constaints and primary keys.</li>
+</ul>
+<h1 id="primary-key">Primary Key</h1>
+<h2 id="adding-a-primary-key">Adding a Primary Key</h2>
+<h3 id="on-table-creation">On Table Creation</h3>
+<div class="sourceCode" id="cb44"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true"></a><span class="kw">create</span> <span class="kw">table</span> person (</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true"></a>    <span class="kw">id</span> BIGSERIAL <span class="kw">NOT</span> <span class="kw">NULL</span> <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true"></a>    first_name <span class="dt">VARCHAR</span>(<span class="dv">50</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true"></a>    last_name <span class="dt">VARCHAR</span>(<span class="dv">50</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true"></a>    gender <span class="dt">VARCHAR</span>(<span class="dv">7</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true"></a>    email <span class="dt">VARCHAR</span>(<span class="dv">100</span>),</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true"></a>    date_of_birth <span class="dt">DATE</span> <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true"></a>    contry_of_birth <span class="dt">VARCHAR</span>(<span class="dv">50</span>) <span class="kw">NOT</span> <span class="kw">NULL</span></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true"></a>);</span></code></pre></div>
+<p>One of the value constraints is <code>PRIMARY KEY</code></p>
+<h3 id="after-table-creation">After Table Creation</h3>
+<div class="sourceCode" id="cb45"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> $table_name <span class="kw">ADD</span> <span class="kw">PRIMARY</span> <span class="kw">KEY</span> ($pk_column);</span></code></pre></div>
+<p>Notes:</p>
+<ul>
+<li>All values in the <code>pk_column</code> must be unique</li>
+<li>You can use multiple columns instead of one to make a pkey</li>
+</ul>
+<h2 id="removing-a-primary-key">Removing a Primary Key</h2>
+<div class="sourceCode" id="cb46"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> $table <span class="kw">DROP</span> <span class="kw">CONSTRAINT</span> $table_pkey;</span></code></pre></div>
+<h2 id="uuids-as-primary-keys">UUIDs as Primary Keys</h2>
+<h3 id="generating-uuids">Generating UUIDs</h3>
+<p>Postgres automadicly comes with an extention you can enable to use UUIDs. simply run</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true"></a><span class="kw">CREATE</span> EXTENSION <span class="cf">IF</span> <span class="kw">NOT</span> <span class="kw">EXISTS</span> <span class="ot">&quot;uuid-ossp&quot;</span>;</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true"></a></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true"></a></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true"></a></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true"></a><span class="kw">SELECT</span> uuid_generate_v4();</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true"></a></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true"></a></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true"></a>           uuid_generate_v4</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true"></a><span class="co">--------------------------------------</span></span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true"></a> 0a59ea41<span class="op">-</span>ad36<span class="op">-</span>4a23<span class="op">-</span>85d0<span class="op">-</span>eea04c72a519</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true"></a>(<span class="dv">1</span> <span class="kw">row</span>)</span></code></pre></div>
+<h3 id="inserting-rows">Inserting Rows</h3>
+<p>In the <code>CREATE TABLE</code>:</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> $table_name (</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true"></a>    <span class="kw">id</span> UUID <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true"></a>    $column_1,</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true"></a>    <span class="op">..</span>.,</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true"></a>    $column_N</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true"></a>);</span></code></pre></div>
+<p>When Inserting:</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> $table (<span class="kw">id</span>, $column_1, <span class="op">..</span>., $column_N) <span class="kw">VALUES</span> (uuid_generate_v4(), $value_1, <span class="op">..</span>., $value_N);</span></code></pre></div>
+<h1 id="constrains">Constrains</h1>
+<h2 id="unique">Unique</h2>
+<p>Differnt from primary keys, but have the same add/drop syntax.</p>
+<h3 id="add">Add</h3>
+<p>For a custom constraint name use:</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> $table <span class="kw">ADD</span> <span class="kw">CONSTRAINT</span> $constraint_name <span class="kw">UNIQUE</span> ($column);</span></code></pre></div>
+<p>To let PostgreSQL decide the constraint name use:</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> $table <span class="kw">ADD</span> <span class="kw">UNIQUE</span> ($column);</span></code></pre></div>
+<h3 id="remove">Remove</h3>
+<div class="sourceCode" id="cb52"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> $table <span class="kw">DROP</span> <span class="kw">CONSTRAINT</span> $constraint_name;</span></code></pre></div>
+<h2 id="check">Check</h2>
+<p>A Constraint baised on a condtion.</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> $table <span class="kw">ADD</span> <span class="kw">CONSTRAINT</span> $constraint_name <span class="kw">CHECK</span> ($condtional);</span></code></pre></div>
+<p>An example using the <code>person</code> table.</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> person <span class="kw">ADD</span> <span class="kw">CONSTRAINT</span> gender_constraint <span class="kw">CHECK</span> (gender <span class="kw">IN</span> (<span class="st">&#39;Female&#39;</span>, <span class="st">&#39;Male&#39;</span>));</span></code></pre></div>
+<pre><code> \d person
+                                        Table &quot;public.person&quot;
+     Column      |          Type          | Collation | Nullable |              Default
+-----------------+------------------------+-----------+----------+------------------------------------
+ id              | bigint                 |           | not null | nextval(&#39;person_id_seq&#39;::regclass)
+ first_name      | character varying(50)  |           | not null |
+ last_name       | character varying(50)  |           | not null |
+ gender          | character varying(7)   |           | not null |
+ email           | character varying(100) |           |          |
+ date_of_birth   | date                   |           | not null |
+ contry_of_birth | character varying(50)  |           | not null |
+Indexes:
+    &quot;person_pkey&quot; PRIMARY KEY, btree (id)
+    &quot;unique_email&quot; UNIQUE CONSTRAINT, btree (email)
+Check constraints:
+    &quot;gender_constraint&quot; CHECK (gender::text = ANY (ARRAY[&#39;Female&#39;::character varying, &#39;Male&#39;::character varying]::text[]))
+</code></pre>
+<h1 id="on-conflect">On Conflect</h1>
+<p>Used to manage update/insert errors where there is a unique constraint on a column.</p>
+<p>In the SQL below if the primary key is a duplicate, it is not inserted into the table, instead, nothing happens.</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> $table ($pk_column, $column_1, $column_2, <span class="op">..</span>., $column_N)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true"></a>VAlUSE ($pk_value, $value_1, $value_2, <span class="op">..</span>., $value_N)</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true"></a><span class="kw">ON</span> CONFLICT ($pk_column) DO <span class="kw">NOTHING</span>;</span></code></pre></div>
+<p>To manage more than one unique column use:</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true"></a><span class="kw">ON</span> CONFICT ($unique_column_1, $unique_column_2) DO <span class="kw">NOTHING</span>;</span></code></pre></div>
+<h1 id="delete">Delete</h1>
+<div class="sourceCode" id="cb58"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true"></a><span class="kw">DELETE</span> <span class="kw">FROM</span> $table <span class="kw">WHERE</span> <span class="op">..</span>.</span></code></pre></div>
+<h2 id="deleting-when-a-forign-key-is-present">Deleting when a Forign Key is present</h2>
+<p>Two Options:</p>
+<ol type="1">
+<li>Update record dependent on forgin key.</li>
+<li>Delete record dependent on forign key.</li>
+<li>Use Cascade - This is a bad practice.</li>
+</ol>
+<p>Then delete the recored beloging to the forign key.</p>
+<h1 id="update">Update</h1>
+<div class="sourceCode" id="cb59"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true"></a><span class="kw">UPDATE</span> $table <span class="kw">SET</span> $colum <span class="op">=</span> $value <span class="kw">WHERE</span> <span class="op">..</span>.</span></code></pre></div>
+<p>For more than one column:</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true"></a><span class="kw">UPDATE</span> $table <span class="kw">SET</span> $column_1 <span class="op">=</span> $value_1, $column_2 <span class="op">=</span> $value_2 <span class="kw">WHERE</span> <span class="op">..</span>.</span></code></pre></div>
+<h1 id="upsert">Upsert</h1>
+<p>Used when a row may or maynot be present in the database.</p>
+<p>For example if a user updates their email shortly after creating their account, and the order that the database recives these requests is not known. Only the most up-to-date info will be kept. regardless of which gets there first.</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> $table ($pk, $column_1, <span class="op">..</span>. $column_N) <span class="kw">VALUES</span> ($pk, $value_1, <span class="op">..</span>. $value_2)</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true"></a><span class="kw">ON</span> CONFLICT ($pk) DO <span class="kw">UPDATE</span> <span class="kw">SET</span> $column_to_update <span class="op">=</span> EXCLUDED.$column_to_update;</span></code></pre></div>
+<h1 id="forign-key">Forign Key</h1>
+<p>A Forign Key is a column in a table that links to the primary key of a row in another column.</p>
+<figure>
+<img src="./sql_relationship_diagram.png" alt="SQL Relationship Diagram" /><figcaption aria-hidden="true">SQL Relationship Diagram</figcaption>
+</figure>
+<p>Forign Key row example:</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true"></a>$forign_key $TYPE REFERANCES $table($pk) <span class="kw">UNIQUE</span> $forgin_key</span></code></pre></div>
+<p>In an INSERT statement:</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true"></a><span class="kw">create</span> <span class="kw">table</span> person (</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true"></a>    <span class="kw">id</span> BIGSERIAL <span class="kw">NOT</span> <span class="kw">NULL</span> <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true"></a>    first_name <span class="dt">VARCHAR</span>(<span class="dv">50</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true"></a>    last_name <span class="dt">VARCHAR</span>(<span class="dv">50</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true"></a>    gender <span class="dt">VARCHAR</span>(<span class="dv">7</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true"></a>    email <span class="dt">VARCHAR</span>(<span class="dv">100</span>),</span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true"></a>    date_of_birth <span class="dt">DATE</span> <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true"></a>    contry_of_birth <span class="dt">VARCHAR</span>(<span class="dv">50</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true"></a>    car_id BIGINT <span class="kw">REFERENCES</span> car(<span class="kw">id</span>) <span class="kw">UNIQUE</span> (car_id)</span>
+<span id="cb63-10"><a href="#cb63-10" aria-hidden="true"></a>);</span></code></pre></div>
+<blockquote>
+<p>Note - The Forgin Key must be the same type as the pk it referances.</p>
+</blockquote>
+<h2 id="updating">Updating</h2>
+<div class="sourceCode" id="cb64"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true"></a><span class="kw">UPDATE</span> person <span class="kw">SET</span> $fk <span class="op">=</span> $val <span class="kw">WHERE</span> <span class="op">..</span>.;</span></code></pre></div>
+<h1 id="joins">Joins</h1>
+<figure>
+<img src="./joins_diagram.png" alt="Sql Joins Diagram" /><figcaption aria-hidden="true">Sql Joins Diagram</figcaption>
+</figure>
+<p>Notes:</p>
+<ul>
+<li>The <code>ON $table_1.column = $table_2.column</code> syntax is the same as <code>USING $column</code> iff the columns have the same names in both tables.</li>
+</ul>
+<h2 id="inner-joins">Inner Joins</h2>
+<p>Combines elements present in both tables into a new table.</p>
+<div class="sourceCode" id="cb65"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> $table_1 <span class="kw">JOIN</span> $table_2 <span class="kw">ON</span> $table_1.<span class="kw">column</span> <span class="op">=</span> $table_2.<span class="kw">column</span>;</span></code></pre></div>
+<p>An example using our <code>person</code> and <code>car</code> tables.</p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> person <span class="kw">JOIN</span> car <span class="kw">ON</span> person.car_id <span class="op">=</span> car.<span class="kw">id</span>;</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true"></a><span class="op">-</span>[ <span class="dt">RECORD</span> <span class="dv">1</span> ]<span class="co">---+-------------------</span></span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true"></a><span class="kw">id</span>              | <span class="dv">3</span></span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true"></a>first_name      | Wait</span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true"></a>last_name       | Deeves</span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true"></a>gender          | Male</span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true"></a>email           | wdeeves2@lulu.com</span>
+<span id="cb66-8"><a href="#cb66-8" aria-hidden="true"></a>date_of_birth   | <span class="dv">1972</span><span class="op">-</span><span class="dv">09</span><span class="op">-</span><span class="dv">24</span></span>
+<span id="cb66-9"><a href="#cb66-9" aria-hidden="true"></a>contry_of_birth | Russia</span>
+<span id="cb66-10"><a href="#cb66-10" aria-hidden="true"></a>car_id          | <span class="dv">1</span></span>
+<span id="cb66-11"><a href="#cb66-11" aria-hidden="true"></a><span class="kw">id</span>              | <span class="dv">1</span></span>
+<span id="cb66-12"><a href="#cb66-12" aria-hidden="true"></a>make            | Acura</span>
+<span id="cb66-13"><a href="#cb66-13" aria-hidden="true"></a>model           | Integra</span>
+<span id="cb66-14"><a href="#cb66-14" aria-hidden="true"></a><span class="dt">year</span>            | <span class="dv">1995</span></span>
+<span id="cb66-15"><a href="#cb66-15" aria-hidden="true"></a>vin             | JHMZE2H59DS943694</span>
+<span id="cb66-16"><a href="#cb66-16" aria-hidden="true"></a>price           | $<span class="dv">3</span>,<span class="fl">441.88</span></span>
+<span id="cb66-17"><a href="#cb66-17" aria-hidden="true"></a><span class="op">-</span>[ <span class="dt">RECORD</span> <span class="dv">2</span> ]<span class="co">---+-------------------</span></span>
+<span id="cb66-18"><a href="#cb66-18" aria-hidden="true"></a><span class="kw">id</span>              | <span class="dv">1</span></span>
+<span id="cb66-19"><a href="#cb66-19" aria-hidden="true"></a>first_name      | Sargent</span>
+<span id="cb66-20"><a href="#cb66-20" aria-hidden="true"></a>last_name       | Matusiak</span>
+<span id="cb66-21"><a href="#cb66-21" aria-hidden="true"></a>gender          | Male</span>
+<span id="cb66-22"><a href="#cb66-22" aria-hidden="true"></a>email           | smatusiak0@irs.gov</span>
+<span id="cb66-23"><a href="#cb66-23" aria-hidden="true"></a>date_of_birth   | <span class="dv">1968</span><span class="op">-</span><span class="dv">09</span><span class="op">-</span><span class="dv">08</span></span>
+<span id="cb66-24"><a href="#cb66-24" aria-hidden="true"></a>contry_of_birth | China</span>
+<span id="cb66-25"><a href="#cb66-25" aria-hidden="true"></a>car_id          | <span class="dv">3</span></span>
+<span id="cb66-26"><a href="#cb66-26" aria-hidden="true"></a><span class="kw">id</span>              | <span class="dv">3</span></span>
+<span id="cb66-27"><a href="#cb66-27" aria-hidden="true"></a>make            | BMW</span>
+<span id="cb66-28"><a href="#cb66-28" aria-hidden="true"></a>model           | <span class="dv">7</span> Series</span>
+<span id="cb66-29"><a href="#cb66-29" aria-hidden="true"></a><span class="dt">year</span>            | <span class="dv">2001</span></span>
+<span id="cb66-30"><a href="#cb66-30" aria-hidden="true"></a>vin             | 5J8TB3H33FL023983</span>
+<span id="cb66-31"><a href="#cb66-31" aria-hidden="true"></a>price           | $<span class="dv">19</span>,<span class="fl">746.03</span></span></code></pre></div>
+<p>Selecting specific columns from both tables:</p>
+<div class="sourceCode" id="cb67"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true"></a><span class="kw">SELECT</span> person.first_name, person.last_name, car.make, car.model <span class="kw">FROM</span> person <span class="kw">JOIN</span> car <span class="kw">ON</span> person.<span class="kw">id</span> <span class="op">=</span> car.<span class="kw">id</span>;</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true"></a> first_name | last_name | make  |  model</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true"></a><span class="co">------------+-----------+-------+----------</span></span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true"></a> Sargent    | Matusiak  | Acura | Integra</span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true"></a> Tobias     | Bulled    | Acura | Integra</span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true"></a> Wait       | Deeves    | BMW   | <span class="dv">7</span> Series</span>
+<span id="cb67-7"><a href="#cb67-7" aria-hidden="true"></a>(<span class="dv">3</span> <span class="kw">rows</span>)</span></code></pre></div>
+<h2 id="left-joins">Left Joins</h2>
+<p>Combines two tables where the result has everything from the Left table and the shared values from the right table.</p>
+<p>In the Car example the result would have all the people and the people who have cars would also have the car info. The people without a <code>car_id</code> will have <code>null</code> for all of the car values.</p>
+<div class="sourceCode" id="cb68"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> person <span class="kw">LEFT</span> <span class="kw">JOIN</span> car <span class="kw">ON</span> car.<span class="kw">id</span> <span class="op">=</span> person.car_id;</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true"></a> <span class="kw">id</span> | first_name | last_name | gender |             email             | date_of_birth | contry_of_birth | car_id | <span class="kw">id</span> | make  |  model   | <span class="dt">year</span> |        vin        |   price</span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true"></a><span class="co">----+------------+-----------+--------+-------------------------------+---------------+-----------------+--------+----+-------+----------+------+-------------------+------------</span></span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true"></a>  <span class="dv">3</span> | Wait       | Deeves    | Male   | wdeeves2@lulu.com             | <span class="dv">1972</span><span class="op">-</span><span class="dv">09</span><span class="op">-</span><span class="dv">24</span>    | Russia          |      <span class="dv">1</span> |  <span class="dv">1</span> | Acura | Integra  | <span class="dv">1995</span> | JHMZE2H59DS943694 |  $<span class="dv">3</span>,<span class="fl">441.88</span></span>
+<span id="cb68-5"><a href="#cb68-5" aria-hidden="true"></a>  <span class="dv">1</span> | Sargent    | Matusiak  | Male   | smatusiak0@irs.gov            | <span class="dv">1968</span><span class="op">-</span><span class="dv">09</span><span class="op">-</span><span class="dv">08</span>    | China           |      <span class="dv">3</span> |  <span class="dv">3</span> | BMW   | <span class="dv">7</span> Series | <span class="dv">2001</span> | 5J8TB3H33FL023983 | $<span class="dv">19</span>,<span class="fl">746.03</span></span>
+<span id="cb68-6"><a href="#cb68-6" aria-hidden="true"></a>  <span class="dv">5</span> | Tobye      | Blaisdell | Female | tblaisdell4@sciencedirect.com | <span class="dv">2015</span><span class="op">-</span><span class="dv">10</span><span class="op">-</span><span class="dv">14</span>    | Netherlands     |        |    |       |          |      |                   |</span>
+<span id="cb68-7"><a href="#cb68-7" aria-hidden="true"></a>  <span class="dv">4</span> | Lulita     | Olivo     | Female |                               | <span class="dv">1953</span><span class="op">-</span><span class="dv">09</span><span class="op">-</span><span class="dv">03</span>    | China           |        |    |       |          |      |                   |</span>
+<span id="cb68-8"><a href="#cb68-8" aria-hidden="true"></a>  <span class="dv">2</span> | Tobias     | Bulled    | Male   |                               | <span class="dv">1961</span><span class="op">-</span><span class="dv">07</span><span class="op">-</span><span class="dv">01</span>    | Poland          |        |    |       |          |      |                   |</span>
+<span id="cb68-9"><a href="#cb68-9" aria-hidden="true"></a>(<span class="dv">5</span> <span class="kw">rows</span>)</span></code></pre></div>
+{% endblock %}
