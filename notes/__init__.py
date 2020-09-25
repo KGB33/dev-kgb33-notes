@@ -13,6 +13,7 @@ def create_app(config=os.environ["APP_CONFIG"]):
     Bootstrap(app)
 
     from notes.main import bp as main_bp
-    app.register_blueprint(main_bp, url_prefix='')
+
+    app.register_blueprint(main_bp, url_prefix="")
 
     return app
