@@ -12,7 +12,7 @@ pacman -Ss postgresql
 ```
 Then start with `systemctl`
 
-```
+```Shell
 systemctl start postgresql
 ```
 
@@ -27,7 +27,9 @@ Access the PostgreSQL CLI via:
 
 Within the psql CLI you can run
 
-`CREATE DATABASE $db_name;`
+```
+CREATE DATABASE $db_name;
+```
 
 to create a new database.
 
