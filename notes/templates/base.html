@@ -1,22 +1,19 @@
 {% extends 'bootstrap/base.html' %} {% block content %}
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link href="static/css/base.css" rel="stylesheet" type="text/css">
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+/>
+<link href="static/css/base.css" rel="stylesheet" type="text/css" />
 <script src="{{ url_for('static', filename='js/base.js') }}"></script>
 
 <div class="nav-bar" id="base-nav-bar">
-	<a href={{ url_for("main.index") }}>Home</a>
-	<i class="fa fa-bars"></i>
-
+  <a href='{{ url_for("main.index") }}'>Home</a>
 </div>
 <div class="container">
-  {% with messages = get_flashed_messages() %} {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-info" role="alert">{{ message }}</div>
-    {% endfor %}
-  {% endif %} {% endwith %}
-
-
-  {% block app_content %}{% endblock %}
+  {% with messages = get_flashed_messages() %} {% if messages %} {% for message
+  in messages %}
+  <div class="alert alert-info" role="alert">{{ message }}</div>
+  {% endfor %} {% endif %} {% endwith %} {% block app_content %}{% endblock %}
 </div>
 {% endblock %}

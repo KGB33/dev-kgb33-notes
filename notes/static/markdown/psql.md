@@ -10,6 +10,7 @@ On Arch Linux install with pacman or yay.
 ```Shell
 pacman -Ss postgresql
 ```
+
 Then start with `systemctl`
 
 ```Shell
@@ -21,7 +22,6 @@ systemctl start postgresql
 Access the PostgreSQL CLI via:
 
 `sudo -u postgres psql`
-
 
 # Creating databases
 
@@ -86,7 +86,7 @@ postTesting=# \d
 (1 row)
 ```
 
-# List Colums in Table
+# List Columns in Table
 
 ```
 postTesting=# \d person
@@ -192,7 +192,7 @@ Generating 1,000 rows of data using [Mockaroo][mockaroo]
 After downloading changed the following in the CREATE TABLE command
 
 - Added NOT NULL constrains
-- Added id and corrisponding info
+- Added id and corresponding info
 
 Generated data is in person.sql
 
@@ -208,7 +208,7 @@ Within psql run `\i ./persons.sql` to run all the SQL code within the file
 
 `LIMIT $int` will limit the returned rows to the specified integer
 
-To select multiple columns seperate the column names with commas.
+To select multiple columns separate the column names with commas.
 
 `SELECT $column_1, $column_2, ..., $column_n FROM $table_name`
 
@@ -370,7 +370,7 @@ SELECT * FROM person WHERE date_of_birth > DATE '1999-03-03' AND contry_of_birth
 
 ```
 
-## Nested Condtionals
+## Nested Conditionals
 
 ```SQL
 SELECT * FROM person WHERE gender = 'Male' AND (contry_of_birth = 'Brazil' OR contry_of_birth = 'Russia')  LIMIT 5;
@@ -422,7 +422,7 @@ A shorter way to write OR'd equal to statements.
 
 `... WHERE $column_X = $value_1 OR ... OR $column_X = $value_N`
 
-is equivalant to
+is equivalent to
 
 `... WHERE $column_X IN ($value_1, ..., $value_N)`
 
@@ -554,6 +554,7 @@ Example (using the car_person.sql file):
 
 
 ```
+
 # Max, Min, Avg
 
 ```SQL
@@ -601,6 +602,7 @@ SELECT make, SUM(price) FROM car GROUP BY make LIMIT 5;
  Infiniti | $125,195.89
 (5 rows)
 ```
+
 # Operatiors
 
 ```SQL
@@ -647,11 +649,12 @@ SELECT make, model, year, (price::numeric * .9 - 200)::money AS "New Price", (pr
 You might have noticed the `AS` keyword in the above SQL, its just a way to rename columns in the output.
 
 `SELECT $column_name AS $new_column_name FROM ...`
+
 # Coalesce
 
 `COALESCE($val_1, $val_2, ..., $val_n)` will output the first value that is not `null`
 
-## Useage
+## Usage
 
 `SELECT COALESCE(null, null, 2)`
 
@@ -706,6 +709,7 @@ SELECT COALESCE(33 / NULLIF(0, 0), -1);
 (1 row)
 
 ```
+
 # Now
 
 `NOW()` Returns the current Date and Time
@@ -736,7 +740,7 @@ More Date/Time Info can be found [here][date_time_docs]
 
 # Interval
 
-Used to calculate differances between Date/Time objects
+Used to calculate differences between Date/Time objects
 
 ```SQL
 SELECT
@@ -776,7 +780,7 @@ Where the Day of the Week uses the following table:
 
 # Age
 
-`AGE` Calculates the differance between two timestamps
+`AGE` Calculates the difference between two timestamps
 
 ```SQL
 SELECT first_name, last_name, AGE(NOW(), date_of_birth) AS Age FROM person ORDER BY date_of_birth LIMIT 5;
@@ -792,7 +796,7 @@ SELECT first_name, last_name, AGE(NOW(), date_of_birth) AS Age FROM person ORDER
 
 # Prefix
 
-- `\d $table` will show the columns and indexes for a table. Use this to see the constaints and primary keys.
+- `\d $table` will show the columns and indexes for a table. Use this to see the constraints and primary keys.
 
 # Primary Key
 
@@ -835,7 +839,7 @@ ALTER TABLE $table DROP CONSTRAINT $table_pkey;
 
 ### Generating UUIDs
 
-Postgres automadicly comes with an extention you can enable to use UUIDs.
+Postgres automadicly comes with an extension you can enable to use UUIDs.
 simply run
 
 ```SQL
@@ -876,7 +880,7 @@ INSERT INTO $table (id, $column_1, ..., $column_N) VALUES (uuid_generate_v4(), $
 
 ## Unique
 
-Differnt from primary keys, but have the same add/drop syntax.
+Different from primary keys, but have the same add/drop syntax.
 
 ### Add
 
@@ -900,10 +904,10 @@ ALTER TABLE $table DROP CONSTRAINT $constraint_name;
 
 ## Check
 
-A Constraint baised on a condtion.
+A Constraint based on a condition.
 
 ```SQL
-ALTER TABLE $table ADD CONSTRAINT $constraint_name CHECK ($condtional);
+ALTER TABLE $table ADD CONSTRAINT $constraint_name CHECK ($conditional);
 ```
 
 An example using the `person` table.
@@ -932,7 +936,7 @@ Check constraints:
 
 ```
 
-# On Conflect
+# On Conflict
 
 Used to manage update/insert errors where there is a unique constraint on a column.
 
@@ -940,15 +944,16 @@ In the SQL below if the primary key is a duplicate, it is not inserted into the 
 
 ```SQL
 INSERT INTO $table ($pk_column, $column_1, $column_2, ..., $column_N)
-VAlUSE ($pk_value, $value_1, $value_2, ..., $value_N)
+VALUES ($pk_value, $value_1, $value_2, ..., $value_N)
 ON CONFLICT ($pk_column) DO NOTHING;
 ```
 
 To manage more than one unique column use:
 
 ```SQL
-ON CONFICT ($unique_column_1, $unique_column_2) DO NOTHING;
+ON CONFLICT ($unique_column_1, $unique_column_2) DO NOTHING;
 ```
+
 # Delete
 
 ```SQL
@@ -963,12 +968,12 @@ Two Options:
 2. Delete record dependent on forign key.
 3. Use Cascade - This is a bad practice.
 
-Then delete the recored beloging to the forign key.
+Then delete the record belonging to the forign key.
 
 # Update
 
 ```SQL
-UPDATE $table SET $colum = $value WHERE ...
+UPDATE $table SET $column = $value WHERE ...
 ```
 
 For more than one column:
@@ -981,14 +986,15 @@ UPDATE $table SET $column_1 = $value_1, $column_2 = $value_2 WHERE ...
 
 Used when a row may or maynot be present in the database.
 
-For example if a user updates their email shortly after creating their account, and the order that the database
-recives these requests is not known. Only the most up-to-date info will be kept. regardless of which gets there
-first.
+For example if a user updates their email shortly after creating their account,
+and the order that the database receives these requests is not known. Only the
+most up-to-date info will be kept. regardless of which gets there first.
 
 ```SQL
 INSERT INTO $table ($pk, $column_1, ... $column_N) VALUES ($pk, $value_1, ... $value_2)
 ON CONFLICT ($pk) DO UPDATE SET $column_to_update = EXCLUDED.$column_to_update;
 ```
+
 # Forign Key
 
 A Forign Key is a column in a table that links to the primary key of a row in another column.
