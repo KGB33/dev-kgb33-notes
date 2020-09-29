@@ -1,3 +1,7 @@
+.md_content {
+  width: 1000px;
+}
+
 .nav-bar {
   background-color: #333;
   overflow: hidden;
