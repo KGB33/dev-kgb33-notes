@@ -1,5 +1,6 @@
 {% extends 'base.html' %}{% block app_content %}
-
+<!-- markdown_template.html -->
 <link rel="stylesheet" href="static/css/markdown.css" />
 
-{{ content|safe }} {% endblock %}
+<div class="md_content">{{ content|safe }}</div>
+{% endblock %}
