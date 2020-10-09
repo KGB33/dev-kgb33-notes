@@ -2,7 +2,7 @@ from flask import render_template
 
 from notes.main import bp
 
-from notes.main.documents import prepare_markdown
+from notes.markdown import render_markdown
 
 
 @bp.route("/")
@@ -13,5 +13,4 @@ def index():
 
 @bp.route("/postgresql")
 def postgresql():
-    content = prepare_markdown("static/markdown/psql.md")
-    return render_template("markdown_template.html", content=content)
+    return render_markdown("static/markdown/psql.md")
