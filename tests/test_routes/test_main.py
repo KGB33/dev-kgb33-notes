@@ -18,6 +18,6 @@ def test_postgresql(test_client):
     assert response.status_code == 200
     assert b"<!-- markdown_template.html -->" in response.data
     assert (
-        b'The youtube video can be found <a href="https://www.youtube.com/watch?v=qw--VYLpxG4">here</a>.</p>'
+        b'The youtube video can be found <a href="https://www.youtube.com/watc'
         in response.data
     )
