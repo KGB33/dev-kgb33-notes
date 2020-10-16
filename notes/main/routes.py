@@ -2,7 +2,7 @@ from flask import render_template
 
 from notes.main import bp
 
-from notes.markdown import render_markdown
+from notes.markdown import render_markdown, find_markdown_files
 
 
 @bp.route("/")
@@ -19,3 +19,9 @@ def postgresql():
 @bp.route("/go/channels")
 def go_channels():
     return render_markdown("static/markdown/Go/NoSuchThingAsGenerators.md")
+
+
+@bp.route("/toc")
+def table_of_contents():
+    print("In TOC route")
+    return "<br>".join(find_markdown_files())

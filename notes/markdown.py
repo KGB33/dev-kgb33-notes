@@ -1,3 +1,7 @@
+from pathlib import Path
+import os
+
+
 import pypandoc
 from flask import render_template
 
@@ -24,3 +28,18 @@ def render_markdown(file_name: str, template: str = "markdown_template.html"):
     """
     content = prepare_markdown(file_name)
     return render_template(template, content=content)
+
+
+def find_markdown_files(path=Path(f"{BASE_DIR}/static/markdown/")):
+    """
+    Find markdown files to create dynamic links
+    """
+    md_files = []
+    for entry in os.scandir(path):
+        if entry.name.endswith(".md"):
+            md_files += [
+                entry.name,
+            ]
+        if entry.is_dir():
+            md_files += find_markdown_files(path / entry.name)
+    return md_files
