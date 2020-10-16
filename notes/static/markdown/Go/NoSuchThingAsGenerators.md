@@ -1,6 +1,6 @@
 # Go doesn't have Generators
 
-Instead, using a combination of channels and gorouties to acchive a simmalar affect.
+Instead, using a combination of channels and goroutines to achieve a similar affect.
 
 # Example
 
@@ -70,12 +70,12 @@ func go_fib(i int) chan int {
 ```
 
 This function takes an integer, and returns a channel of integers. In very basic terms a
-channel is a queue that can be passed between concurrent gorouties.
+channel is a queue that can be passed between concurrent goroutines.
 
-### The Anonomus Function
+### The Anonymous Function
 
-This annonums function is a go routean so that the outer function can return the channel while
-the inner anon function is still calcuating values.
+This anonymous function is a goroutine so that the outer function can return the channel while
+the inner anon function is still calculating values.
 
 ```Go
 	go func() {
@@ -92,7 +92,7 @@ the inner anon function is still calcuating values.
 ```
 
 It starts with two integers, `a` and `b`, both set to one.
-Then, using `i` from the outerscope, it creates a for loop.
+Then, using `i` from the outer scope, it creates a for loop.
 Within the for loop we first add the value to the channel,
 then generate the next term.
 
@@ -106,8 +106,8 @@ It could be modeled as such:
 |  2  |  1, 1, 2   |
 |  3  | 1, 1, 2, 3 |
 
-Finally, once the for-loop compleats the channel is closed. It is best practice to close
-channels within the same function that creates them. This prevents memory leaks and inifante loops.
+Finally, once the for-loop completes the channel is closed. It is best practice to close
+channels within the same function that creates them. This prevents memory leaks and infinite loops.
 
 ### The Main Function
 
@@ -120,11 +120,11 @@ func main () {
 }
 ```
 
-The `main` function in `package main` is the entrypoint for the application.
-Here it first recives a channel from `go_fib`, it then consumes the channel within the for loop.
+The `main` function in `package main` is the entry point for the application.
+Here it first receives a channel from `go_fib`, it then consumes the channel within the for loop.
 Printing each term using `fmt.Printf`.
 
 The for loop will end when the channel is both closed and empty.
 
-Even though we're using go routeans (the main function is a go routine too), the program still runs sequentally.
-`main` still has to wait for the digits to be consumed. Infact, a squental implementation is much faster (102,889 ns/op vs 62,092 ns/op).
+Even though we're using goroutines (the main function is a go routine too), the program still runs sequentially.
+`main` still has to wait for the digits to be consumed. In fact, a sequential implementation is much faster (102,889 ns/op vs 62,092 ns/op).
