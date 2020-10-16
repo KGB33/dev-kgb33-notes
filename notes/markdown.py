@@ -34,12 +34,12 @@ def find_markdown_files(path=Path(f"{BASE_DIR}/static/markdown/")):
     """
     Find markdown files to create dynamic links
     """
-    md_files = []
+    md_files = {path: []}
     for entry in os.scandir(path):
         if entry.name.endswith(".md"):
-            md_files += [
+            md_files[path] += [
                 entry.name,
             ]
         if entry.is_dir():
-            md_files += find_markdown_files(path / entry.name)
-    return md_files
+            md_files |= find_markdown_files(path / entry.name)
+    return {key: value for key, value in md_files.items() if value}
