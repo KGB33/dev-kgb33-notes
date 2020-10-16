@@ -14,3 +14,8 @@ def index():
 @bp.route("/postgresql")
 def postgresql():
     return render_markdown("static/markdown/psql.md")
+
+
+@bp.route("/go/channels")
+def go_channels():
+    return render_markdown("static/markdown/Go/NoSuchThingAsGenerators.md")
