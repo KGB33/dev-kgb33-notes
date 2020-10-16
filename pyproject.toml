@@ -5,7 +5,7 @@ description = "A Notetaking website"
 authors = ["KGB33 <github@bassingthwaite.org>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 flask = "^1.1.2"
 pylint = "^2.6.0"
 flask-bootstrap = "^3.3.7"
