@@ -1,6 +1,13 @@
 {% extends 'base.html' %} {% block app_content %}
 <!-- index.html -->
 
-<h1>This is the index page</h1>
+{% for dir in files %}
+<h1>
+  {{
+  dir|replace("/home/kgb33/Code/Projects/notes.kgb33.dev/notes/static/markdown",
+  "")|trim("/") }}
+</h1>
+{% for file in files[dir] %}
+<h2><a href="/doc?dir={{ dir }}&file={{ file }}">{{ file[:-3] }}</a></h2>
 
-<a href="/postgresql">PostgreSQL<a> {% endblock %} </a></a>
+{% endfor %} {% endfor %} {% endblock %}
