@@ -12,22 +12,22 @@ A Static site containing various notes I've taken.
 First, clone the repo.
 
 ```
-git clone git@github.com:KGB33/dev-kgb33-notes.git
-cd dev-kgb33-notes
+❯ git clone git@github.com:KGB33/dev-kgb33-notes.git
+❯ cd dev-kgb33-notes
 ```
 
 Next, install requirments and activate your virutual environment.
 
 ```
-poetry install
-poetry shell
+❯ poetry install
+❯ poetry shell
 ```
 
 Finally, run the tests.
 
 ```
-pytest tests/
+❯ pytest tests/
 ```
 
-To deploy localy: first ensure that docker is installed and started on your system, then run `./prod/start`.
+To deploy localy: first ensure that docker is installed and started on your system, then run `❯ ./prod/start`.
 You can access the server at `<host-ip>:3333` from any device on your local network.
