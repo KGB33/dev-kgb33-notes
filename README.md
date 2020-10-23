@@ -1,10 +1,11 @@
 # notes.kgb33.dev
 
-A Static site containing various notes I've taken. 
+A Static site containing various notes I've taken.
 
 # Local Development
 
 ### System Requirments
+
 - Python 3.9^
 - Pandoc
 - Poetry (optional)
