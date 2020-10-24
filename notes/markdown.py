@@ -1,10 +1,12 @@
 import os
 from pathlib import Path
 
-import pypandoc
 from flask import render_template
 
 from notes import BASE_DIR
+
+import markdown
+from pygments.formatters import HtmlFormatter
 
 
 def prepare_markdown(file_name: str):
@@ -13,10 +15,20 @@ def prepare_markdown(file_name: str):
     HTML, then fixes the img tags
     """
     path = str(BASE_DIR / file_name)
-    content = pypandoc.convert_file(path, "html")
-    content = content.replace('<img src="./', '<img src="static/img/')
 
-    return content
+    with open(path) as md_file:
+        content = markdown.markdown(
+            md_file.read(),
+            extensions=[
+                "markdown.extensions.fenced_code",
+                "markdown.extensions.codehilite",
+            ],
+        )
+
+    formatter = HtmlFormatter(full=True, style="emacs", cssclass="codehilite")
+    css_string = f"<style>{formatter.get_style_defs()}</style>"
+    content = content.replace('src="./', 'src="static/img/')
+    return css_string + content
 
 
 def render_markdown(file_name: str, template: str = "markdown_template.html"):
