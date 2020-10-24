@@ -1,6 +1,6 @@
 # Intro
 
-This is a series of notes from FreeCodeCamp's PostgreSQL tutoral.
+This is a series of notes from FreeCodeCamp's PostgreSQL tutorial.
 The youtube video can be found [here][yt_video].
 
 # Install
@@ -21,35 +21,39 @@ systemctl start postgresql
 
 Access the PostgreSQL CLI via:
 
-`sudo -u postgres psql`
+```SQL
+sudo -u postgres psql
+```
 
 # Creating databases
 
 Within the psql CLI you can run
 
-```
-CREATE DATABASE $db_name;
+```SQL
+CREATE DATABASE db_name;
 ```
 
 to create a new database.
 
 > All commands must end with a `;`!!
 
+```SQL
     postgres=# CREATE DATABASE test;
     CREATE DATABASE
     postgres=#
+```
 
 ## Connect to the DB
 
-`psql -U $username $db_name`
+`psql -U username db_name`
 
 Or, from within the psql cli
 
-`\c $db_name`
+`\c db_name`
 
 ## Dropping Databases
 
-Within the psql cli: `DROP DATABASE $db_name`
+Within the psql cli: `DROP DATABASE db_name`
 
 ## Creating Tables
 
@@ -75,7 +79,7 @@ CREATE TABLE person (
 
 # List Tables in DB
 
-```
+```Shell
 postTesting=# \d
 
 
@@ -88,7 +92,7 @@ postTesting=# \d
 
 # List Columns in Table
 
-```
+```Shell
 postTesting=# \d person
 
 
@@ -118,7 +122,7 @@ CREATE TABLE person (
 - `PRIMARY KEY` -
 - `BIGSERIAL` - Signed Int, Auto incriments
 
-```
+```Shell
 postTesting=# \d
              List of relations
  Schema |     Name      |   Type   | Owner
@@ -126,9 +130,7 @@ postTesting=# \d
  public | person        | table    | kgb33
  public | person_id_seq | sequence | kgb33
 (2 rows)
-```
 
-```
 postTesting=# \d person
                                        Table "public.person"
     Column     |         Type          | Collation | Nullable |              Default
@@ -145,16 +147,16 @@ Indexes:
 
 # Dropping tables
 
-`DROP TABLE $table_name;`
+`DROP TABLE table_name;`
 
 # Insert
 
 ```SQL
-INSERT INTO $table_name (
-	$columns
+INSERT INTO table_name (
+	columns
 	...
 	...)
-VALUES ($var, ..., ...);
+VALUES (var, ..., ...);
 ```
 
 Example:
@@ -174,7 +176,7 @@ INSERT 0 1
 
 # View Table Contents
 
-Use SQL `SELECT * FROM $table_name` to view all entries.
+Use SQL `SELECT * FROM table_name` to view all entries.
 
 ```SQL
 SELECT * FROM person;
@@ -206,15 +208,15 @@ Within psql run `\i ./persons.sql` to run all the SQL code within the file
 
 `SELECT * FROM $table_name;` will select all columns.
 
-`LIMIT $int` will limit the returned rows to the specified integer
+`LIMIT int` will limit the returned rows to the specified integer
 
 To select multiple columns separate the column names with commas.
 
-`SELECT $column_1, $column_2, ..., $column_n FROM $table_name`
+`SELECT column_1, column_2, ..., column_n FROM table_name`
 
 # Limit
 
-`LIMIT $int` will limit the returned rows to the specified integer
+`LIMIT int` will limit the returned rows to the specified integer
 
 `SELECT * FROM $table_name LIMIT 10`
 
@@ -288,7 +290,7 @@ SELECT * FROM person ORDER BY contry_of_birth DESC LIMIT 10;
  559 | Bourke     | Zamora    | Male   | bzamorafi@php.net       | 1983-07-16    | Zimbabwe
  146 | Sharla     | Green     | Female | sgreen41@live.com       | 2020-03-07    | Zambia
  860 | Raul       | Yeliashev | Male   | ryeliashevnv@wiley.com  | 2014-02-16    | Zambia
- 332 | Mack       | O'Lagen   | Male   |                         | 1973-04-03    | Yemen
+ 332 | Mack       | OLagen    | Male   |                         | 1973-04-03    | Yemen
  314 | Odessa     | Pinnigar  | Female | opinnigar8p@4shared.com | 1986-09-05    | Yemen
  567 | Avery      | Snap      | Male   | asnapfq@gravatar.com    | 1977-02-10    | Yemen
  535 | Ruprecht   | Lippett   | Male   | rlippetteu@amazon.co.uk | 1984-03-09    | Yemen
@@ -344,7 +346,7 @@ SELECT * FROM person WHERE date_of_birth > DATE '1999-03-03' LIMIT 5;
   9 | Barthel    | Roughey     | Male   | broughey8@opensource.org      | 2002-04-23    | Philippines
  11 | Geralda    | Ludgate     | Female |                               | 2005-02-12    | France
  12 | Tracey     | Connaughton | Female | tconnaughtonb@pcworld.com     | 2008-03-05    | Saint Kitts and Nevis
- 13 | Alica      | O' Mahony   | Female |                               | 2004-02-22    | France
+ 13 | Alica      | OMahony     | Female |                               | 2004-02-22    | France
 (5 rows)
 ```
 
@@ -544,15 +546,13 @@ SELECT contry_of_birth, COUNT(*) from person GROUP BY contry_of_birth HAVING COU
 # Exporting Query Results
 
 ```SQL
-\copy ($query) TO '$location/file_name' DELIMITER '$delimiter' $FILE_TYPE HEADER;
+COPY (query) TO 'location/file_name' DELIMITER 'delimiter' FILE_TYPE HEADER;
 ```
 
 Example (using the car_person.sql file):
 
 ```SQL
-
-
-
+COPY persons TO '\tmp\persons_db.csv' DELIMITER ',' CSV HEADER;
 ```
 
 # Max, Min, Avg
