@@ -1,7 +1,6 @@
 FROM python
 RUN apt-get update && \
-        apt-get upgrade -y && \
-        apt-get install pandoc -y
+        apt-get upgrade -y
 
 RUN python -m pip install --upgrade pip
 
