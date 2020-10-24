@@ -38,7 +38,7 @@ from any device on your local network.
 ## Code Highlighting
 
 To convert the `*.md` files to HTML and add code highlighting the tools
-[Python-Markdown]() and [Pygments][pygments] are used. An excellent tutorial by
+[Python-Markdown][py-md] and [Pygments][pygments] are used. An excellent tutorial by
 Rudra Narayan can be found [here][code-highlighting]
 
 [py-md]: https://github.com/Python-Markdown/markdown
