@@ -25,7 +25,7 @@ def prepare_markdown(file_name: str):
             ],
         )
 
-    formatter = HtmlFormatter(full=True, style="emacs", cssclass="codehilite")
+    formatter = HtmlFormatter(full=True, style="solarized-dark")
     css_string = f"<style>{formatter.get_style_defs()}</style>"
     content = content.replace('src="./', 'src="static/img/')
     return css_string + content
