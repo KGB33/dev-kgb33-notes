@@ -1,11 +1,12 @@
 import os
+from uuid import uuid4
 
 
 class Base:
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True
-    SECRET_KEY = os.environ["FLASK_SECRET_KEY"]
+    SECRET_KEY = os.getenv("FLASK_SECRET_KEY", str(uuid4()))
 
 
 class Testing(Base):

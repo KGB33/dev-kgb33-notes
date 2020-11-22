@@ -14,10 +14,6 @@ RUN poetry install --no-dev
 
 COPY notes ./notes
 
-COPY ./prod/entrypoint.sh .
 COPY ./prod/gunicorn_config.py .
-RUN chmod +x entrypoint.sh
 
 EXPOSE 5000
-
-CMD ["sh", "entrypoint.sh"]
